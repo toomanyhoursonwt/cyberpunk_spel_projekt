@@ -1,7 +1,36 @@
 import random as rand
 import math
 import funktioner
-print("Welcome to the game...")
+import listor_namn
+
+STEG_FALLA = 1
+STEG_FIENDE = 2
+STEG_KISTA = 3
+
+print("""
+ /$$$$$$$$                  /$$                          
+|__  $$__/                 | $$                          
+   | $$  /$$$$$$   /$$$$$$$| $$$$$$$  /$$$$$$$   /$$$$$$ 
+   | $$ /$$__  $$ /$$_____/| $$__  $$| $$__  $$ /$$__  $$
+   | $$| $$$$$$$$| $$      | $$  \ $$| $$  \ $$| $$  \ $$
+   | $$| $$_____/| $$      | $$  | $$| $$  | $$| $$  | $$
+   | $$|  $$$$$$$|  $$$$$$$| $$  | $$| $$  | $$|  $$$$$$/
+   |__/ \_______/ \_______/|__/  |__/|__/  |__/ \______/ 
+                                                         
+                                                         
+                                                         
+ /$$$$$$$            /$$ /$$                             
+| $$__  $$          | $$|__/                             
+| $$  \ $$  /$$$$$$ | $$ /$$ /$$$$$$$   /$$$$$$          
+| $$  | $$ /$$__  $$| $$| $$| $$__  $$ /$$__  $$         
+| $$  | $$| $$$$$$$$| $$| $$| $$  \ $$| $$  \ $$         
+| $$  | $$| $$_____/| $$| $$| $$  | $$| $$  | $$         
+| $$$$$$$/|  $$$$$$$| $$| $$| $$  | $$|  $$$$$$$         
+|_______/  \_______/|__/|__/|__/  |__/ \____  $$         
+                                            | $$         
+                                            | $$         
+                                            |__/         
+""")
 print("----------------------")
 
 namn_karaktar = input("Vad är din karaktärs namn? ")
@@ -23,10 +52,6 @@ class Entity:
     def print_info(self):
         print(f"Det här är {self.namn} med {self.hälsa} hp")
 
-young_cyberpunk = Entity("Lamborghini", 10, 1000, 2024)
-
-young_cyberpunk.print_info()
-
 class Item:
     def __init__(self, namn, kraft, försvar, hälsa, medvetenhet):
         self.namn = namn
@@ -36,9 +61,8 @@ class Item:
         self.medvetenhet = medvetenhet
 
 
-stats_typshi = 0
 poang = 5
-while stats_typshi < 5:
+while poang > 0:
     print(f"Du har {poang} poäng att dela ut till dina stats.")
     print(f"Dina stats är {karaktar_stats}")
     try:
@@ -54,9 +78,9 @@ while stats_typshi < 5:
     elif uppgradering == 4:
         karaktar_stats["försvar"] += 1
     poang = poang - 1
-    stats_typshi = stats_typshi - 1
 
 print(f"Dina stats är {karaktar_stats}")
+playerhp = funktioner.halsa(karaktar_stats["hälsa"])
 
 aventyr = 0
 while aventyr < 10:
@@ -68,4 +92,72 @@ while aventyr < 10:
     else:
         print("Skriv v eller h")
         continue
+    steg = funktioner.steg()
+    if steg == STEG_FALLA:
+        falla = funktioner.skada(rand.randint(5, 15), playerhp)
+    elif steg == STEG_FIENDE:
+        startattack = funktioner.start_attack(karaktar_stats["medvetenhet"])
+        fiende = Entity(listor_namn.enemy_name[rand.randrange(len(listor_namn.enemy_name))], rand.randint(4, 10), 
+                        funktioner.halsa(rand.randint(5, 12)), 5)
+        print(f"Du stötte på fienden {fiende.namn} med {fiende.hälsa} hp")
+        if startattack == True:
+            print("Du börjar striden!")
+            while True:
+                if funktioner.parera(fiende.försvar) == False:
+                    hp_skillnad = fiende.hälsa
+                    fiende.hälsa = funktioner.skada(karaktar_stats["kraft"], fiende.hälsa)
+                    hp_skillnad = hp_skillnad - fiende.hälsa
+                    if fiende.hälsa < 0:
+                        fiende.hälsa = 0
+                    print(f"Fienden tog {hp_skillnad} skada och har nu {fiende.hälsa} hp kvar")
+                    if fiende.hälsa == 0:
+                        print(f"Du besegrade {fiende.namn}!")
+                        break
+                elif funktioner.parera(fiende.försvar) == True:
+                    print(f"{fiende.namn} lyckades blockera attacken utan att ta skada")
+                #FÖR SPELARE:
+                if funktioner.parera(karaktar_stats["försvar"]) == False:
+                    hp_skillnad2 = playerhp
+                    playerhp = funktioner.skada(fiende.kraft, playerhp)
+                    hp_skillnad2 = hp_skillnad2 - playerhp
+                    if playerhp < 0:
+                        playerhp = 0
+                    print(f"Du tog {hp_skillnad2} skada och har nu {playerhp} hp kvar")
+                    if playerhp == 0:
+                        print(f"Du dog... GAME OVER")
+                        break
+                elif funktioner.parera(karaktar_stats["försvar"]) == True:
+                    print("Du lyckades blockera attacken utan att ta skada")
+                print("")
+        elif startattack == False:
+            print("Fienden börjar striden!")
+            while True:
+                if funktioner.parera(karaktar_stats["försvar"]) == False:
+                    hp_skillnad2 = playerhp
+                    playerhp = funktioner.skada(fiende.kraft, playerhp)
+                    hp_skillnad2 = hp_skillnad2 - playerhp
+                    if playerhp < 0:
+                        playerhp = 0
+                    print(f"Du tog {hp_skillnad2} skada och har nu {playerhp} hp kvar")
+                    if playerhp == 0:
+                        print(f"Du dog... GAME OVER")
+                        break
+                elif funktioner.parera(karaktar_stats["försvar"]) == True:
+                    print("Du lyckades blockera attacken utan att ta skada")
+                #FÖR FIENDER
+                if funktioner.parera(fiende.försvar) == False:
+                    hp_skillnad = fiende.hälsa
+                    fiende.hälsa = funktioner.skada(karaktar_stats["kraft"], fiende.hälsa)
+                    hp_skillnad = hp_skillnad - fiende.hälsa
+                    if fiende.hälsa < 0:
+                        fiende.hälsa = 0
+                    print(f"Fienden tog {hp_skillnad} skada och har nu {fiende.hälsa} hp kvar")
+                    if fiende.hälsa == 0:
+                        print(f"Du besegrade {fiende.namn}!")
+                        break
+                elif funktioner.parera(fiende.försvar) == True:
+                    print(f"{fiende.namn} lyckades blockera attacken utan att ta skada")                
+                print("")            
+    elif steg == STEG_KISTA:
+        pass
     aventyr = aventyr + 1

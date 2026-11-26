@@ -11,14 +11,14 @@ def parera(försvar):
         return True
     else:
         return False
+
+def halsa(hälsa):
+    hp = hälsa * 10
+    return hp
     
 def steg():
     stegalternativ = rand.randint (1, 3)
-    if stegalternativ == 1:
-        trap = skada(rand.randint(10, 15))
-        return trap
-    if stegalternativ == 2:
-        fiende = 
+    return stegalternativ
 
 
 def start_attack(medvetenhet):
