@@ -81,6 +81,7 @@ while poang > 0:
 
 print(f"Dina stats är {karaktar_stats}")
 playerhp = funktioner.halsa(karaktar_stats["hälsa"])
+dead = False
 
 aventyr = 0
 while aventyr < 10:
@@ -94,7 +95,16 @@ while aventyr < 10:
         continue
     steg = funktioner.steg()
     if steg == STEG_FALLA:
-        falla = funktioner.skada(rand.randint(5, 15), playerhp)
+        if funktioner.parera(karaktar_stats["försvar"]) == False:
+            falla = funktioner.skada(rand.randint(5, 15), playerhp)
+            falla_hp_skillnad = playerhp - falla
+            playerhp = falla
+            if playerhp <= 0:
+                print("Du dog... GAME OVER")
+            else:
+                print(f"Du tog {falla_hp_skillnad} skada från en fälla men överlevde med {playerhp}")
+        else:
+            print("Du stötte på en fälla men lyckades ta dig undan")
     elif steg == STEG_FIENDE:
         startattack = funktioner.start_attack(karaktar_stats["medvetenhet"])
         fiende = Entity(listor_namn.enemy_name[rand.randrange(len(listor_namn.enemy_name))], rand.randint(4, 10), 
@@ -125,6 +135,7 @@ while aventyr < 10:
                     print(f"Du tog {hp_skillnad2} skada och har nu {playerhp} hp kvar")
                     if playerhp == 0:
                         print(f"Du dog... GAME OVER")
+                        dead = True
                         break
                 else:
                     print("Du lyckades blockera attacken utan att ta skada")
@@ -140,7 +151,7 @@ while aventyr < 10:
                         playerhp = 0
                     print(f"Du tog {hp_skillnad2} skada och har nu {playerhp} hp kvar")
                     if playerhp == 0:
-                        print(f"Du dog... GAME OVER")
+                        dead = True
                         break
                 else:
                     print("Du lyckades blockera attacken utan att ta skada")
@@ -160,4 +171,6 @@ while aventyr < 10:
                 print("")            
     else:
         pass
+    if dead == True:
+        print("Du dog... GAME OVER")
     aventyr = aventyr + 1
