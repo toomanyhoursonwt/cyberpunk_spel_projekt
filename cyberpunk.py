@@ -113,7 +113,7 @@ while aventyr < 10:
                     if fiende.hälsa == 0:
                         print(f"Du besegrade {fiende.namn}!")
                         break
-                elif funktioner.parera(fiende.försvar) == True:
+                else:
                     print(f"{fiende.namn} lyckades blockera attacken utan att ta skada")
                 #FÖR SPELARE:
                 if funktioner.parera(karaktar_stats["försvar"]) == False:
@@ -126,7 +126,7 @@ while aventyr < 10:
                     if playerhp == 0:
                         print(f"Du dog... GAME OVER")
                         break
-                elif funktioner.parera(karaktar_stats["försvar"]) == True:
+                else:
                     print("Du lyckades blockera attacken utan att ta skada")
                 print("")
         elif startattack == False:
@@ -142,7 +142,7 @@ while aventyr < 10:
                     if playerhp == 0:
                         print(f"Du dog... GAME OVER")
                         break
-                elif funktioner.parera(karaktar_stats["försvar"]) == True:
+                else:
                     print("Du lyckades blockera attacken utan att ta skada")
                 #FÖR FIENDER
                 if funktioner.parera(fiende.försvar) == False:
@@ -155,9 +155,9 @@ while aventyr < 10:
                     if fiende.hälsa == 0:
                         print(f"Du besegrade {fiende.namn}!")
                         break
-                elif funktioner.parera(fiende.försvar) == True:
+                else:
                     print(f"{fiende.namn} lyckades blockera attacken utan att ta skada")                
                 print("")            
-    elif steg == STEG_KISTA:
+    else:
         pass
     aventyr = aventyr + 1
